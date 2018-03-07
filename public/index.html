@@ -21,29 +21,42 @@
 </div>
 
 
+<div id ="FamousPerson">
+
+
+</div>
 
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
+window.onload = function(){
+
+  var obj;
+
 
 function generatePeople(){
+
+
+
     var xhttp = new XMLHttpRequest();
      xhttp.onreadystatechange = function() {
        if (this.readyState == 4 && this.status == 200) {
 
-var obj = JSON.parse(this.responseText)
-
+obj = JSON.parse(this.responseText)
 console.log(obj)
 
 var targetDiv = document.getElementById("FamousFrames")
 
+targetDiv.innerHTML = ""
+
 for (var i = 0; i < obj.length; i++) {
 
-var newPerson = document.createElement("div")
-newPerson.innerHTML = (obj[i].quote)
-FamousFrames.append(newPerson);
-newPerson.setAttribute("style","font-size:14pt;")
-
+var newQuote = document.createElement("div")
+newQuote.innerHTML = (obj[i].quote)
+FamousFrames.append(newQuote);
+newQuote.setAttribute("style","font-size:14pt;")
+newQuote.setAttribute("data",obj[i].id)
+newQuote.setAttribute("class","FamousQuotes")
 }
        }
      };
@@ -54,8 +67,68 @@ newPerson.setAttribute("style","font-size:14pt;")
 
    generatePeople();
 
+   function hasClass(elem, className) {
+       return elem.className.split(' ').indexOf(className) > -1;
+   }
 
 
+   document.addEventListener('click', function (e) {
+       if (hasClass(e.target, 'FamousQuotes')) {
+          console.log(e.target.getAttribute('data'))
+          var person = e.target.getAttribute('data')
+
+
+          showAuthor(person,obj)
+       }
+   }, false);
+
+
+
+   function showAuthor(person, obj){
+
+
+   var x = parseInt(person -1)
+
+document.getElementById("FamousFrames").innerHTML="";
+var targetDiv = document.getElementById("FamousPerson")
+
+var newName = document.createElement("div")
+var newPic = document.createElement("img")
+var newBirthday = document.createElement("div")
+var newQuote =document.createElement("div")
+
+
+newName.innerHTML = "Name: " + obj[x].name
+newPic.setAttribute("src",obj[x].image_url)
+newBirthday.innerHTML = "Birthday: " + obj[x].birthday
+newQuote.innerHTML = "Quote: " + obj[x].quote
+
+
+targetDiv.appendChild(newName)
+targetDiv.appendChild(newPic)
+targetDiv.appendChild(newBirthday)
+targetDiv.appendChild(newQuote)
+
+var newButton = document.createElement("button")
+newButton.innerHTML = "Go Back to Quotes"
+newButton.setAttribute("id","reset")
+targetDiv.append(newButton)
+
+
+
+document.getElementById("reset").addEventListener("click", function(){
+
+targetDiv.innerHTML = ""
+generatePeople();
+})
+
+
+
+   console.log(obj[x])
+
+   }
+
+}
 
     </script>
   </body>
